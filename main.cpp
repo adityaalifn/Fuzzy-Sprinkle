@@ -2,11 +2,46 @@
 
 using namespace std;
 
+struct arrayInference{
+    double nilai;
+    string label;
+};
+
+typedef struct arrayInference rule;
+rule rule1, rule2, rule3, rule4, arr[3];
+/*typedef struct arrayInference rule2;
+typedef struct arrayInference rule3;
+typedef struct arrayInference rule4;
+typedef struct arrayInference arr[3];*/
+
+string tentukan_rule(string y, string x){
+    if (x == "Basah"){
+        return "Singkat";
+    } else if (x == "Lembab"){
+        if (y=="Dingin" || y=="Sejuk"){
+            return "Singkat";
+        }else {
+            return "Sedang";
+        }
+    }else if (x=="Kering"){
+            return "Lama";
+    }
+}
+double konjungsi(double y, double x) {
+    if (y <= x) {
+        return y;
+    }
+    else {
+        return x;
+    }
+}
+
 
 int main()
 {
     double suhu,miuSuhu1,miuSuhu2,kelembapan,miuLembab1,miuLembab2 = 0;
     string label1suhu,label2suhu,label1lembab,label2lembab = " "; //label1 turun label2 naik
+    //double rulenilai1, rulenilai2, rulenilai3, rulenilai4;
     cout<<"Masukkan Suhu: ";
     cin>>suhu;
     if (suhu <= 0){
@@ -112,5 +147,52 @@ int main()
     }
 
     //inference
+
+    rule1.label =tentukan_rule(label1suhu,label1lembab);
+    rule2.label =tentukan_rule(label1suhu,label2lembab);
+    rule3.label =tentukan_rule(label2suhu,label1lembab);
+    rule4.label =tentukan_rule(label2suhu,label2lembab);
+    rule1.nilai =konjungsi(miuSuhu1,miuLembab1);
+    rule2.nilai =konjungsi(miuSuhu1,miuLembab2);
+    rule3.nilai =konjungsi(miuSuhu2,miuLembab1);
+    rule4.nilai =konjungsi(miuSuhu2,miuLembab2);
+    cout << endl;
+    cout << "IF "<< label1suhu<<" ("<<miuSuhu1<<") AND " << label1lembab<< " ("<<miuLembab1<<") THEN "<<rule1.label<< "("<<rule1.nilai<<")" <<endl;
+    cout << "IF "<< label1suhu<<" ("<<miuSuhu1<<") AND " << label2lembab<< " ("<<miuLembab2<<") THEN "<<rule2.label<< "("<<rule2.nilai<<")" <<endl;
+    cout << "IF "<< label2suhu<<" ("<<miuSuhu2<<") AND " << label1lembab<< " ("<<miuLembab1<<") THEN "<<rule3.label<< "("<<rule3.nilai<<")" <<endl;
+    cout << "IF "<< label2suhu<<" ("<<miuSuhu2<<") AND " << label2lembab<< " ("<<miuLembab2<<") THEN "<<rule4.label<< "("<<rule4.nilai<<")" <<endl;
+
+
+    arr[0].label = rule1.label;
+    arr[0].nilai = rule1.nilai;
+    for (int i=1; i<2;i++){
+        if(rule3.label !=arr[i].label){
+            arr[i].label=rule3.label;
+        }else {
+            if (arr[i].nilai < rule3.nilai){
+                arr[i].nilai = rule3.nilai;
+            }
+        }
+    }
+    for (int i=1; i<2;i++){
+        if (rule2.label!=arr[i].label){
+            arr[i].label=rule2.label;
+        }else {
+            if (arr[i].nilai < rule2.nilai){
+                arr[i].nilai = rule2.nilai;
+            }
+        }
+    }
+    for (int i=1; i<2;i++){
+        if(rule4.label!=arr[i].label) {
+            arr[i].label=rule2.label;
+        }else {
+            if (arr[i].nilai < rule4.nilai){
+                arr[i].nilai = rule4.nilai;
+            }
+        }
+    }
+
+
     return 0;
 }
