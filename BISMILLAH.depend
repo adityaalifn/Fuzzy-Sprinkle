@@ -5,10 +5,12 @@
 1491920312 source:c:\users\0xiriz\downloads\fuzzy-sprinkle-master\main.cpp
 	<iostream>
 
-1491972849 source:c:\users\tabul\desktop\fuzzy-sprinkle-master\main.cpp
+1492003692 source:c:\users\tabul\desktop\fuzzy-sprinkle-master\main.cpp
 	<iostream>
 	<conio.h>
 	<stdio.h>
+	<math.h>
+	<iomanip>
 
 1491932038 source:c:\users\tabul\desktop\fuzzy-sprinkle-master\fuzzythod.cpp
 	"FuzzyThod.h"

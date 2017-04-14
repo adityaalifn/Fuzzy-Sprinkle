@@ -1,6 +1,8 @@
 #include <iostream>
 #include <conio.h>
 #include <stdio.h>
+#include <math.h>
+#include <iomanip>
 
 using namespace std;
 
@@ -11,27 +13,29 @@ struct arrayFuzzy{
 
 typedef struct arrayFuzzy fuzzy;
 
-fuzzy suhuF[2],lembabF[2],rule[4],infer[3];
-
 string tentukan_rule(string y, string x);
 void tentukanSuhu(double suhu);
 void tentukanLembab(double kelembapan);
 double konjungsi(double y, double x);
 
+fuzzy suhuF[2],lembabF[2],rule[4],infer[3];
+
+
 int main()
 {
-    double hasil;
+    cout.precision(2);
+    double hasil = 0;
     //Menghitung suhu
-    double suhu;
+    double suhuIn;
     cout<<"Masukkan Suhu: ";
-    cin>>suhu;
-    tentukanSuhu(suhu);
+    cin>>suhuIn;
+    tentukanSuhu(suhuIn);
 
     //Menghitung kelembaban
-    double kelembapan;
+    double kelembapanIn;
     cout<<"Masukan Kelembapan: ";
-    cin>>kelembapan;
-    tentukanLembab(kelembapan);
+    cin>>kelembapanIn;
+    tentukanLembab(kelembapanIn);
 
     //output fuzzfication
     cout<<"******* FUZZYFICATION *******"<<endl;
@@ -50,13 +54,14 @@ int main()
 
     //inference
     cout<<"******* INFERENCE *******"<<endl;
-    //konjungsi
-    for (int i=0; i<4; i++){
-        for (int j=0; i<2; i++){
-            rule[i].label = tentukan_rule(suhuF[i].label,lembabF[j].label);
-            rule[i].nilai = konjungsi(suhuF[i].nilai,lembabF[j].nilai);
-        }
-    }
+    rule[0].label = tentukan_rule(suhuF[0].label,lembabF[0].label);
+    rule[0].nilai = konjungsi(suhuF[0].nilai,lembabF[0].nilai);
+    rule[1].label = tentukan_rule(suhuF[0].label,lembabF[1].label);
+    rule[1].nilai = konjungsi(suhuF[0].nilai,lembabF[1].nilai);
+    rule[2].label = tentukan_rule(suhuF[1].label,lembabF[0].label);
+    rule[2].nilai = konjungsi(suhuF[1].nilai,lembabF[0].nilai);
+    rule[3].label = tentukan_rule(suhuF[1].label,lembabF[1].label);
+    rule[3].nilai = konjungsi(suhuF[1].nilai,lembabF[1].nilai);
 
     //output hasil konjungsi
     for (int i=0; i<4; i++){
@@ -81,8 +86,10 @@ int main()
     }
 
     //output hasil disjungsi
+    double pembagi = 0;
     for (int i=0; i<3; i++){
         if(infer[i].nilai != 0){
+            pembagi += infer[i].nilai;
             cout<<infer[i].label<<" "<<infer[i].nilai<<endl;
             if (infer[i].label == "Singkat"){
                 hasil += infer[i].nilai * 20;
@@ -96,7 +103,7 @@ int main()
         }
     }
     cout<<endl<<"******* DEFUZZYFICATION *******"<<endl;
-    cout<<"Lama Springkle Menyiram: "<<hasil<<" Menit"<<endl;
+    cout<<"Lama Springkle Menyiram: "<<(hasil/pembagi)<<" Menit"<<endl;
     return 0;
 }
 
@@ -183,10 +190,7 @@ void tentukanLembab(double kelembapan){
 }
 
 string tentukan_rule(string y, string x){
-    if (x == "Basah"){
-        return "Singkat";
-    }
-    else if (x == "Lembab"){
+    if (x == "Lembab"){
         if (y=="Dingin" || y=="Sejuk"){
             return "Singkat";
         }
@@ -194,10 +198,13 @@ string tentukan_rule(string y, string x){
             return "Sedang";
         }
     }
+    else if (x == "Basah"){
+        return "Singkat";
+    }
     else if (x=="Kering"){
         return "Lama";
     }
-    return "";
+    return " ";
 }
 
 double konjungsi(double y, double x) {
